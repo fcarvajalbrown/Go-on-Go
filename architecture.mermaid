@@ -1,0 +1,50 @@
+graph TD
+    %% Entry Point
+    A[main.go] --> B[Echo Server :8080]
+    
+    %% Static Files
+    B --> C[static/ folder]
+    C --> D[index.html - Game Board UI]
+    C --> E[game.js - Client Logic]
+    C --> F[styles.css - Board Styling]
+    
+    %% API Layer
+    B --> G[REST Endpoints]
+    G --> H[POST /game/new]
+    G --> I[GET /game/:id]
+    G --> J[POST /game/:id/move]
+    
+    %% WebSocket
+    B --> K[WebSocket /ws]
+    K --> L[Real-time Move Updates]
+    
+    %% Game Engine
+    H --> M[game/ package]
+    I --> M
+    J --> M
+    L --> M
+    
+    M --> N[Board State Management]
+    M --> O[Rules Engine - Captures, Ko, etc]
+    M --> P[Turn Management]
+    M --> Q[Scoring System]
+    
+    %% Data Flow
+    E --> R[Browser WebSocket Client]
+    R --> K
+    
+    %% Dependencies
+    S[go.mod] --> T[github.com/labstack/echo/v4]
+    S --> U[github.com/gorilla/websocket]
+    A --> S
+    
+    %% Styling
+    classDef entry fill:#e1f5fe
+    classDef server fill:#f3e5f5
+    classDef game fill:#e8f5e8
+    classDef client fill:#fff3e0
+    
+    class A entry
+    class B,G,K server
+    class M,N,O,P,Q game
+    class C,D,E,F,R client

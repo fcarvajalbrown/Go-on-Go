@@ -1,74 +1,28 @@
 graph TD
-    %% Entry Point
-    A[main.go] --> B[Echo Server :8080]
+    %% Main Application Files
+    A[main.go] --> B[go.mod]
+    A --> C[game/board.go]
+    A --> D[static/index.html]
     
-    %% Static Files - IMPLEMENTED
-    B --> C[static/ folder]
-    C --> D[index.html - Game Board UI - IMPLEMENTED]
+    %% Dependencies
+    B --> E[echo/v4 framework]
     
-    %% API Layer - IMPLEMENTED
-    B --> G[REST Endpoints - IMPLEMENTED]
-    G --> H[POST /game/new - IMPLEMENTED]
-    G --> I[GET /game/:id - IMPLEMENTED]
-    G --> J[POST /game/:id/move - IMPLEMENTED]
+    %% File Relationships
+    C --> F[Go game logic]
+    D --> G[Frontend UI]
     
-    %% WebSocket - NOT IMPLEMENTED
-    B --> K[WebSocket /ws - TODO]
-    K --> L[Real-time Move Updates - TODO]
-    
-    %% Game Engine - IMPLEMENTED
-    H --> M[game/board.go - IMPLEMENTED]
-    I --> M
-    J --> M
-    
-    M --> N[Board State Management - IMPLEMENTED]
-    M --> O[Rules Engine - Captures, Ko, etc - IMPLEMENTED]
-    M --> P[Turn Management - IMPLEMENTED]
-    M --> Q[Scoring System - TODO]
-    
-    %% Memory Storage - IMPLEMENTED
-    M --> R[In-Memory Games Map - IMPLEMENTED]
-    R --> S[games['local'] = *Board]
-    
-    %% Data Flow - IMPLEMENTED
-    D --> T[JavaScript API Calls - IMPLEMENTED]
-    T --> U[fetch('/game/new') - IMPLEMENTED]
-    T --> V[fetch('/game/local/move') - IMPLEMENTED]
-    U --> H
-    V --> J
-    
-    %% UI Updates - IMPLEMENTED
-    J --> W[JSON Board State - IMPLEMENTED]
-    W --> X[updateUI() Function - IMPLEMENTED]
-    X --> Y[Stone Placement Visual - IMPLEMENTED]
-    X --> Z[Capture Detection Visual - IMPLEMENTED]
-    X --> AA[Turn Indicator - IMPLEMENTED]
-    X --> BB[Captured Count Display - IMPLEMENTED]
-    
-    %% Dependencies - IMPLEMENTED
-    CC[go.mod - IMPLEMENTED] --> DD[github.com/labstack/echo/v4 - IMPLEMENTED]
-    A --> CC
-    
-    %% Current Features Working
-    EE[Working Features:]
-    EE --> FF[Stone Placement]
-    EE --> GG[Capture Mechanics]
-    EE --> HH[Turn Alternation]
-    EE --> II[Ko Rule Prevention]
-    EE --> JJ[Pass Functionality]
-    
-    %% Future Features
-    KK[TODO Features:]
-    KK --> LL[WebSocket Real-time]
-    KK --> MM[Territory Scoring]
-    KK --> NN[Game History/Undo]
-    KK --> OO[Multiple Board Sizes]
-    
+    %% Current Status
+    H[Implemented Files]
+    H --> A
+    H --> B
+    H --> C
+    H --> D
+
     %% Styling
     classDef implemented fill:#c8e6c9
     classDef todo fill:#ffcdd2
-    classDef working fill:#e1f5fe
+    classDef external fill:#e1f5fe
     
-    class A,B,C,D,G,H,I,J,M,N,O,P,R,S,T,U,V,W,X,Y,Z,AA,BB,CC,DD,FF,GG,HH,II,JJ implemented
-    class K,L,Q,LL,MM,NN,OO todo
-    class EE,KK working
+    class A,B,C,D,F,G,H implemented
+    class I,J,K,L todo
+    class E external

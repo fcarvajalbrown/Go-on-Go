@@ -2,49 +2,73 @@ graph TD
     %% Entry Point
     A[main.go] --> B[Echo Server :8080]
     
-    %% Static Files
+    %% Static Files - IMPLEMENTED
     B --> C[static/ folder]
-    C --> D[index.html - Game Board UI]
-    C --> E[game.js - Client Logic]
-    C --> F[styles.css - Board Styling]
+    C --> D[index.html - Game Board UI - IMPLEMENTED]
     
-    %% API Layer
-    B --> G[REST Endpoints]
-    G --> H[POST /game/new]
-    G --> I[GET /game/:id]
-    G --> J[POST /game/:id/move]
+    %% API Layer - IMPLEMENTED
+    B --> G[REST Endpoints - IMPLEMENTED]
+    G --> H[POST /game/new - IMPLEMENTED]
+    G --> I[GET /game/:id - IMPLEMENTED]
+    G --> J[POST /game/:id/move - IMPLEMENTED]
     
-    %% WebSocket
-    B --> K[WebSocket /ws]
-    K --> L[Real-time Move Updates]
+    %% WebSocket - NOT IMPLEMENTED
+    B --> K[WebSocket /ws - TODO]
+    K --> L[Real-time Move Updates - TODO]
     
-    %% Game Engine
-    H --> M[game/ package]
+    %% Game Engine - IMPLEMENTED
+    H --> M[game/board.go - IMPLEMENTED]
     I --> M
     J --> M
-    L --> M
     
-    M --> N[Board State Management]
-    M --> O[Rules Engine - Captures, Ko, etc]
-    M --> P[Turn Management]
-    M --> Q[Scoring System]
+    M --> N[Board State Management - IMPLEMENTED]
+    M --> O[Rules Engine - Captures, Ko, etc - IMPLEMENTED]
+    M --> P[Turn Management - IMPLEMENTED]
+    M --> Q[Scoring System - TODO]
     
-    %% Data Flow
-    E --> R[Browser WebSocket Client]
-    R --> K
+    %% Memory Storage - IMPLEMENTED
+    M --> R[In-Memory Games Map - IMPLEMENTED]
+    R --> S[games['local'] = *Board]
     
-    %% Dependencies
-    S[go.mod] --> T[github.com/labstack/echo/v4]
-    S --> U[github.com/gorilla/websocket]
-    A --> S
+    %% Data Flow - IMPLEMENTED
+    D --> T[JavaScript API Calls - IMPLEMENTED]
+    T --> U[fetch('/game/new') - IMPLEMENTED]
+    T --> V[fetch('/game/local/move') - IMPLEMENTED]
+    U --> H
+    V --> J
+    
+    %% UI Updates - IMPLEMENTED
+    J --> W[JSON Board State - IMPLEMENTED]
+    W --> X[updateUI() Function - IMPLEMENTED]
+    X --> Y[Stone Placement Visual - IMPLEMENTED]
+    X --> Z[Capture Detection Visual - IMPLEMENTED]
+    X --> AA[Turn Indicator - IMPLEMENTED]
+    X --> BB[Captured Count Display - IMPLEMENTED]
+    
+    %% Dependencies - IMPLEMENTED
+    CC[go.mod - IMPLEMENTED] --> DD[github.com/labstack/echo/v4 - IMPLEMENTED]
+    A --> CC
+    
+    %% Current Features Working
+    EE[Working Features:]
+    EE --> FF[Stone Placement]
+    EE --> GG[Capture Mechanics]
+    EE --> HH[Turn Alternation]
+    EE --> II[Ko Rule Prevention]
+    EE --> JJ[Pass Functionality]
+    
+    %% Future Features
+    KK[TODO Features:]
+    KK --> LL[WebSocket Real-time]
+    KK --> MM[Territory Scoring]
+    KK --> NN[Game History/Undo]
+    KK --> OO[Multiple Board Sizes]
     
     %% Styling
-    classDef entry fill:#e1f5fe
-    classDef server fill:#f3e5f5
-    classDef game fill:#e8f5e8
-    classDef client fill:#fff3e0
+    classDef implemented fill:#c8e6c9
+    classDef todo fill:#ffcdd2
+    classDef working fill:#e1f5fe
     
-    class A entry
-    class B,G,K server
-    class M,N,O,P,Q game
-    class C,D,E,F,R client
+    class A,B,C,D,G,H,I,J,M,N,O,P,R,S,T,U,V,W,X,Y,Z,AA,BB,CC,DD,FF,GG,HH,II,JJ implemented
+    class K,L,Q,LL,MM,NN,OO todo
+    class EE,KK working

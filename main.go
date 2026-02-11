@@ -1,6 +1,9 @@
 package main
 
 import (
+	"go-game/game" // ADD this line
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -35,7 +38,8 @@ func handleWebSocket(c echo.Context) error {
 
 // Create new Go game
 func newGame(c echo.Context) error {
-	return nil
+	board := game.NewBoard(19)
+	return c.JSON(http.StatusOK, board)
 }
 
 // Get current game state
@@ -45,5 +49,6 @@ func getGame(c echo.Context) error {
 
 // Process player move
 func makeMove(c echo.Context) error {
-	return nil
+	// TODO: Get board, parse move, call board.MakeMove()
+	return c.JSON(http.StatusOK, "move processed")
 }

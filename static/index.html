@@ -2,157 +2,42 @@
 <html>
 <head>
     <title>Go Game</title>
-    <style>
-        .board { display: grid; grid-template-columns: repeat(19, 30px); gap: 1px; margin: 20px 0; }
-        .cell { width: 30px; height: 30px; border: 1px solid #000; cursor: pointer; background: #deb887; }
-        .cell:hover { background: #f0e68c; }
-        .black { background: #000; border-radius: 50%; }
-        .white { background: #fff; border-radius: 50%; border: 2px solid #000; }
-        .info { margin: 10px 0; font-family: Arial, sans-serif; }
-        .button { padding: 10px 20px; margin: 5px; cursor: pointer; background: #4CAF50; color: white; border: none; }
-        .current-player { font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Go Game</h1>
-    
-    <div class="info">
-        <div>Current Player: <span id="currentPlayer" class="current-player">Black</span></div>
-        <div>Captured - Black: <span id="capturedBlack">0</span>, White: <span id="capturedWhite">0</span></div>
-        <button class="button" onclick="newGame()">New Game</button>
-        <button class="button" onclick="pass()">Pass</button>
+    <div class="container">
+        <h1>Go on Go</h1>
+        
+        <div class="info">
+            <div class="player-info">
+                <div>Current Player:</div>
+                <div id="currentPlayer" class="current-player current-black">Black</div>
+            </div>
+            
+            <div class="captured-display">
+                <div class="captured-item">
+                    <span class="captured-stone captured-black"></span>
+                    <span>Black: <span id="capturedBlack">0</span></span>
+                </div>
+                <div class="captured-item">
+                    <span class="captured-stone captured-white"></span>
+                    <span>White: <span id="capturedWhite">0</span></span>
+                </div>
+            </div>
+            
+            <div>
+                <button class="button" onclick="newGame()">New Game</button>
+                <button class="button" onclick="pass()">Pass</button>
+            </div>
+        </div>
+        
+        <div class="board-container">
+            <div id="board" class="board"></div>
+        </div>
+        
+        <div id="status">Click "New Game" to start playing</div>
     </div>
-    
-    <div id="board" class="board"></div>
-    
-    <div id="status" class="info"></div>
 
-    <script>
-        let gameState = null;
-        let gameId = 'local'; // For now, use a fixed game ID
-        
-        // Initialize the board UI
-        function initBoard() {
-            const board = document.getElementById('board');
-            board.innerHTML = ''; // Clear existing board
-            
-            for(let i = 0; i < 361; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.position = i;
-                cell.onclick = () => makeMove(i);
-                board.appendChild(cell);
-            }
-        }
-        
-        // Create a new game
-        async function newGame() {
-            try {
-                const response = await fetch('/game/new', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                
-                if (response.ok) {
-                    gameState = await response.json();
-                    updateUI();
-                    setStatus('New game started!');
-                } else {
-                    setStatus('Failed to create new game');
-                }
-            } catch (error) {
-                setStatus('Error: ' + error.message);
-            }
-        }
-        
-        // Make a move at the specified position
-        async function makeMove(position) {
-            if (!gameState) {
-                setStatus('Please start a new game first');
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/game/${gameId}/move`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ position: position })
-                });
-                
-                if (response.ok) {
-                    gameState = await response.json();
-                    updateUI();
-                    setStatus(`Move played at position ${position}`);
-                } else {
-                    const error = await response.text();
-                    setStatus('Invalid move: ' + error);
-                }
-            } catch (error) {
-                setStatus('Error: ' + error.message);
-            }
-        }
-        
-        // Pass turn
-        async function pass() {
-            if (!gameState) {
-                setStatus('Please start a new game first');
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/game/${gameId}/move`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ pass: true })
-                });
-                
-                if (response.ok) {
-                    gameState = await response.json();
-                    updateUI();
-                    setStatus('Player passed');
-                } else {
-                    setStatus('Failed to pass');
-                }
-            } catch (error) {
-                setStatus('Error: ' + error.message);
-            }
-        }
-        
-        // Update the UI with current game state
-        function updateUI() {
-            if (!gameState) return;
-            
-            // Update board stones
-            const cells = document.querySelectorAll('.cell');
-            gameState.Grid.forEach((stone, index) => {
-                const cell = cells[index];
-                cell.className = 'cell';
-                if (stone === 1) cell.classList.add('black');
-                else if (stone === 2) cell.classList.add('white');
-            });
-            
-            // Update current player
-            const currentPlayerEl = document.getElementById('currentPlayer');
-            currentPlayerEl.textContent = gameState.CurrentPlayer === 1 ? 'Black' : 'White';
-            
-            // Update captured stones
-            document.getElementById('capturedBlack').textContent = gameState.CapturedStones[1] || 0;
-            document.getElementById('capturedWhite').textContent = gameState.CapturedStones[2] || 0;
-            
-            // Check for game over
-            if (gameState.IsGameOver) {
-                setStatus('Game Over! Both players passed.');
-            }
-        }
-        
-        // Display status messages
-        function setStatus(message) {
-            document.getElementById('status').textContent = message;
-        }
-        
-        // Initialize the game on page load
-        initBoard();
-        setStatus('Click "New Game" to start playing');
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
